@@ -10,12 +10,26 @@ const port = process.env.PORT || 3000;
 
 // middleware
 app.use(express.json());
-app.use(
+
+/* app.use(
 	cors({
 		origin: ["https://book-store-frontend-two-zeta.vercel.app"],
 		credentials: true,
 	})
-);
+); */
+
+app.use((req, res, next) => {
+	res.setHeader("Access-Control-Allow-Origin", "*");
+	res.setHeader(
+		"Access-Control-Allow-Methods",
+		"OPTIONS, GET, POST, PUT, PATCH, DELETE"
+	);
+	res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+	if (req.method === "OPTIONS") {
+		return res.sendStatus(200);
+	}
+	next();
+});
 
 // routes
 const bookRoutes = require("./src/books/book.route");
