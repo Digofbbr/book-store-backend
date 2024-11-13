@@ -18,18 +18,25 @@ app.use(express.json());
 	})
 ); */
 
-app.use((req, res, next) => {
-	res.setHeader("Access-Control-Allow-Origin", "*");
-	res.setHeader(
-		"Access-Control-Allow-Methods",
-		"OPTIONS, GET, POST, PUT, PATCH, DELETE"
-	);
-	res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-	if (req.method === "OPTIONS") {
-		return res.sendStatus(200);
-	}
-	next();
-});
+// CORS Configuration (Tailored to Your Requirements)
+const allowedOrigins = [
+	"https://book-store-frontend-two-zeta.vercel.app",
+	"http://localhost:5173", // Remove if not needed for development
+];
+
+const corsOptions = {
+	origin: function (origin, callback) {
+		if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+			callback(null, true); // Allow requests from allowed origins
+		} else {
+			callback(new Error("Origin not allowed by CORS")); // Block unauthorized requests
+		}
+	},
+	credentials: true, // Enable cookies for cross-origin requests (if applicable)
+	optionsSuccessStatus: 200, // Send a 200 response on preflight OPTIONS requests
+};
+
+app.use(cors(corsOptions)); // Apply CORS middleware for all routes
 
 // routes
 const bookRoutes = require("./src/books/book.route");
